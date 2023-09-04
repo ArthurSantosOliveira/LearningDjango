@@ -1,0 +1,12 @@
+{% block content %}
+    <h1>Register Client</h1>
+    <form action="{% url 'processa_formulario' %}" method="POST">
+        {% csrf_token %}
+        <table>
+            {{ form.as_p }}
+        </table>
+        <input type="submit">
+    </form>
+    <p>Go Back to<a href="/"> Home</a> </p>
+    <!-- Link para a página index.html -->
+{% endblock %}

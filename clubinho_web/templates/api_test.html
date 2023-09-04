@@ -1,0 +1,22 @@
+{% block content %}
+
+    <h1>Wize advices</h1>
+    <ul>
+        {% for item in data %}
+            <li>{{ data.slip.advice }}</li>
+        {% endfor %}
+        <!-- O problema que você está enfrentando ocorre porque a resposta da API que 
+            você está consumindo é um objeto JSON aninhado. O dado real da dica está dentro da chave 'slip', 
+            que por sua vez contém as chaves 'id' e 'advice'. Portanto, ao acessar o valor da dica, você deve 
+            navegar até a chave 'advice' dentro de 'slip!-->
+
+    </ul>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit">New advice</button>
+    </form>
+    <p>Go Back to<a href="/"> Home</a> </p>
+
+{% endblock %}
+
+ 

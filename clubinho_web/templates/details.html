@@ -1,0 +1,13 @@
+{% block title %}
+    <h1>Details about: {{ mymember.name }} {{ mymember.last_name }}</h1>
+{% endblock %}
+
+{% block content %}
+    <p>Email: {{ mymember.email }}</p>
+    <p>Name: {{ mymember.name }}</p>
+    <p>Lastname: {{ mymember.last_name }}</p>
+
+    <p><a href="/">HOME</a></p>
+      <p><a href="{% url 'update_cliente' mymember.id %}">Edit {{ mymember.name }}</a></p>
+
+{% endblock %}

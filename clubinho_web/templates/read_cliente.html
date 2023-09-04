@@ -1,0 +1,14 @@
+{% block title %}
+    <h1>Members: </h1>
+{% endblock %}
+
+{% block content %}
+
+  <ul>
+    {% for x in mymembers %}
+      <li><a href="details/{{x.id}}">{{x.name}} {{x.lastname}}</a></li>
+    {% endfor %}
+  </ul>
+  <p><a href="/">HOME</a></p>
+
+{% endblock %}
