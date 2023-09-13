@@ -12,6 +12,24 @@
 </head>
 <body>
             <h1>Lista de Funcionários</h1>
+            <form method="GET">
+                {{ busca_form.as_p }}
+                <button type="submit">Buscar</button>
+            </form>  
+            
+            <!-- atributo action aponta para a url ordernar-funcionarios -->
+            <form method="GET" action="{% url 'ordenarFuncionarios' %}">
+
+                {{ ordenacao_form.ordenacao.label_tag }} {{ ordenacao_form.ordenacao }}
+                <button type="submit">Ordenar</button>
+            </form>
+            
+            
+            <ul>
+                {% for item in dados %}
+                    <li>{{ item.seu_campo }}</li>
+                {% endfor %}
+            </ul>
             <table>
                 <thead>
                     <tr>
