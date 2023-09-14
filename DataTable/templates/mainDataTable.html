@@ -1,69 +1,64 @@
-{% extends "master.html" %}
-
-{% block title %}
-    Home page
-{% endblock %}
-
-{% block content %}
 <!DOCTYPE html>
 <html>
 <head>
     <title>Lista de Funcionários</title>
 </head>
 <body>
-            <h1>Lista de Funcionários</h1>
-            <form method="GET">
-                {{ busca_form.as_p }}
-                <button type="submit">Buscar</button>
-            </form>  
-            
-            <!-- atributo action aponta para a url ordernar-funcionarios -->
-            <form method="GET" action="{% url 'ordenarFuncionarios' %}">
+    <h1>Lista de Funcionários</h1>
+    <form method="GET">
+        {{ busca_form.as_p }}
+        <button type="submit">Buscar</button>
+    </form>
 
-                {{ ordenacao_form.ordenacao.label_tag }} {{ ordenacao_form.ordenacao }}
-                <button type="submit">Ordenar</button>
-            </form>
-            
-            
-            <ul>
-                {% for item in dados %}
-                    <li>{{ item.seu_campo }}</li>
-                {% endfor %}
-            </ul>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Data</th>
-                        <th>Nome</th>
-                        <th>Matrícula</th>
-                        <th>Cargo</th>
-                        <th>Nível</th>
-                        <th>Valor Base</th>
-                        <th>Proventos</th>
-                        <th>Descontos</th>
-                        <th>Líquidos</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for funcionario in registers %}
-                        <tr>
-                            <td>{{ funcionario.data }}</td>
-                            <td>{{ funcionario.nome }}</td>
-                            <td>{{ funcionario.matricula }}</td>
-                            <td>{{ funcionario.cargo }}</td>
-                            <td>{{ funcionario.nivel }}</td>
-                            <td>{{ funcionario.valor_base }}</td>
-                            <td>{{ funcionario.proventos }}</td>
-                            <td>{{ funcionario.descontos }}</td>
-                            <td>{{ funcionario.liquidos }}</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+    <form method="GET" action="{% url 'ordenarFuncionarios' %}">
+        {{ ordenacao_form.ordenacao.label_tag }} {{ ordenacao_form.ordenacao }}
+        <button type="submit">Ordenar</button>
+    </form>
 
-        
+    <table>
+        <thead>
+            <tr>
+                <th>Data</th>
+                <th>Nome</th>
+                <th>Matrícula</th>
+                <th>Cargo</th>
+                <th>Nível</th>
+                <th>Valor Base</th>
+                <th>Proventos</th>
+                <th>Descontos</th>
+                <th>Líquidos</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for funcionario in pagina_atual %}
+                <tr>
+                    <td>{{ funcionario.data }}</td>
+                    <td>{{ funcionario.nome }}</td>
+                    <td>{{ funcionario.matricula }}</td>
+                    <td>{{ funcionario.cargo }}</td>
+                    <td>{{ funcionario.nivel }}</td>
+                    <td>{{ funcionario.valor_base }}</td>
+                    <td>{{ funcionario.proventos }}</td>
+                    <td>{{ funcionario.descontos }}</td>
+                    <td>{{ funcionario.liquidos }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
     </table>
+
+    <div class="pagination">
+        <span class="step-links">
+            {% if pagina_atual.has_previous %}
+                <a href="?page=1">Primeira</a>
+                <a href="?page={{ pagina_atual.previous_page_number }}">Anterior</a>
+            {% endif %}
+    
+    
+            {% if pagina_atual.has_next %}
+                <a href="?page={{ pagina_atual.next_page_number }}">Próxima</a>
+                <a href="?page={{ pagina_atual.paginator.num_pages }}">Última</a>
+            {% endif %}
+        </span>
+    </div>
 </body>
 </html>
-
-{% endblock %}
