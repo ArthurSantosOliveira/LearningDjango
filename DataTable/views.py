@@ -1,12 +1,15 @@
 from django.core.paginator import Paginator
 from django.shortcuts import render
 from .models import Funcionario
+from django.http import QueryDict
 from .forms import BuscaForm, OrdenacaoForm
+from urllib.parse import urlparse
+from .models import Funcionario
+from django.contrib import admin
 
 def mainDataTable(request):
     # registros de Funcionario
     registros = Funcionario.objects.all()
-
     # instância dos formulários
     busca_form = BuscaForm()
     ordenacao_form = OrdenacaoForm()
@@ -22,7 +25,8 @@ def mainDataTable(request):
     if termo_busca:
         registros = registros.filter(nome__icontains=termo_busca)
 
-    return render(request, 'mainDataTable.html', {'pagina_atual': pagina_atual, 'busca_form': busca_form, 'ordenacao_form': ordenacao_form})
+
+    return render(request, 'mainDataTable.html',{'pagina_atual': pagina_atual, 'busca_form': busca_form, 'ordenacao_form': ordenacao_form})
 
 def ordenarFuncionarios(request):
     # pega o valor do GET
@@ -46,4 +50,6 @@ def ordenarFuncionarios(request):
     pagina_numero = request.GET.get('page')
     pagina_atual = paginator.get_page(pagina_numero)
 
-    return render(request, 'mainDataTable.html', {'pagina_atual': pagina_atual, 'busca_form': BuscaForm({'termo_busca': termo_busca}), 'ordenacao_form': OrdenacaoForm({'ordenacao': ordenacao})})
+
+    return render(request, 'mainDataTable.html', {'pagina_atual': pagina_atual, 'busca_form': BuscaForm({'termo_busca': termo_busca}), 
+                                                  'ordenacao_form': OrdenacaoForm({'ordenacao': ordenacao}),})
