@@ -1,11 +1,9 @@
 from django.core.paginator import Paginator
 from django.shortcuts import render
 from .models import Funcionario
-from django.http import QueryDict
 from .forms import BuscaForm, OrdenacaoForm
-from urllib.parse import urlparse
 from .models import Funcionario
-from django.contrib import admin
+
 
 def mainDataTable(request):
     # registros de Funcionario
@@ -20,13 +18,15 @@ def mainDataTable(request):
     pagina_numero = request.GET.get('page')
     pagina_atual = paginator.get_page(pagina_numero)
 
-    # pesquisa
+
+        # pesquisa
     termo_busca = request.GET.get('termo_busca')
     if termo_busca:
-        registros = registros.filter(nome__icontains=termo_busca)
+        registros = registros.filter(nome__contains=termo_busca)
 
 
-    return render(request, 'mainDataTable.html',{'pagina_atual': pagina_atual, 'busca_form': busca_form, 'ordenacao_form': ordenacao_form})
+    return render(request, 'mainDataTable.html',{'pagina_atual': pagina_atual, 'busca_form': busca_form, 
+                                                 'ordenacao_form': ordenacao_form, 'registros':registros})
 
 def ordenarFuncionarios(request):
     # pega o valor do GET

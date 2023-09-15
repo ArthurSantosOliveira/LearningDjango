@@ -24,8 +24,8 @@ class Funcionario(models.Model):
         verbose_name_plural = "Funcionarios"
 
 class Salario(models.Model):
-    salario = models.DecimalField(max_digits=10, decimal_places=2, null=False)
-    funcionario = models.ForeignKey(Funcionario, on_delete=models.CASCADE, related_name='salarios', null=True)
+    salario = models.DecimalField(max_digits=10, decimal_places=2, null=True)
+    funcionario = models.ForeignKey(Funcionario, on_delete=models.CASCADE, related_name='salario' ,null=True)
 
     def __str__(self):
         return str(self.salario)
