@@ -55,8 +55,7 @@ def api_test(request):
     response = requests.get(api_url)
 
     if response.status_code == 200:
-        data = response.json()  # Converte a resposta JSON em um dicionário Python
-    else:
+        data = response.json()  
         data = {}  # Lidar com erros, se necessário
     return render(request, 'api_test.html', {'data': data})
 
