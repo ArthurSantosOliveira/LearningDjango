@@ -2,6 +2,7 @@ from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 
 
+# Create your models here.
 
 class Cargo(models.Model):
     cargo = models.CharField(max_length=200)
@@ -11,7 +12,6 @@ class Cargo(models.Model):
         return self.cargo
 
 
-# Create your models here.
 class Funcionario(models.Model):
     data = models.DateField()
     nome = models.CharField(max_length=100)

@@ -1,63 +1,59 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-br">
 <head>
-    <title>Lista de Funcionários</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="//code.highcharts.com/css/highcharts.css">
+    <title>Gráficos</title>
 </head>
-
 <body>
-    <h1>Lista de Funcionários</h1>
+    <h1>Gráficos</h1>
     <table class="table table-bordered" id="example" style="text-align: center;">
         <thead class="table-success">
             <tr>
-                <th>Data</th>
-                <th>Nome</th>
-                <th>Matrícula</th>
-                <th>Cargo</th>
-                <th>Nível</th>
-                <th>Salario</th>
+                <th>Cargos</th>
+                <th>Média de Salário Por Cargo</th>
             </tr>
         </thead>
         <tbody>
-
-            {% for funcionario in registros %}
+            {% for cargo, media in media_por_cargo.items %}
                 <tr>
-                    <td>{{ funcionario.data }}</td>
-                    <td>{{ funcionario.nome }}</td>
-                    <td>{{ funcionario.matricula }}</td>
-                    <td>{{ funcionario.cargo }}</td>
-                    <td>{{ funcionario.cargo.nivel }}</td>
-                    <td>{{ funcionario.salario.all.0.salario }}</td>
+                    <td>{{ cargo.cargo }}</td>
+                    <td>{{ media|floatformat:"2" }}</td>
                 </tr>
             {% endfor %}
         </tbody>
     </table>
-    <a href="{% url 'mediaSalarios' %}">Gráficos e agrupamentos</a>
+    <img src="data:image/png;base64,{{ image_base64 }}" alt="Gráfico de Média de Salário por Cargo" >
 
-    <div id="demo-output" style="height: 300px;"></div>
+    <button id="gerarPdfButton">Gera PDF de Pessoas por cargos</button>
+
 
     <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
-
-    <script src="https://code.highcharts.com/highcharts.js"></script>
-    <script src="https://code.highcharts.com/modules/accessibility.js"></script>
-
     <script>
         $(document).ready(function () {
             const table = $("#example").DataTable({
                 paging: true,
                 pageLength: 10,
-                lengthChange: true,
+                lengthChange: false,
                 autoWidth: true,
-                searching: true,
+                searching: false,
                 info: true,
                 ordering: true
             });
-
         });
+        
     </script>
+        <script>
+            $(document).ready(function () {    
+                $("#gerarPdfButton").click(function () {
+                    window.location.href = "{% url 'gerarPDFs' %}";
+                });
+            });
+        </script>
 </body>
 </html>
