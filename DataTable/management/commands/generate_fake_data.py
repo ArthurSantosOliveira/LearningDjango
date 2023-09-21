@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 from faker import Faker
-from DataTable.models import Funcionario, Cargo, Salario
+from DataTable.models import Funcionario, Cargo, FuncionarioCargo
 import random
 
 # Crie uma instância do Faker
@@ -13,7 +13,7 @@ class Command(BaseCommand):
         parser.add_argument('count', type=int, help='Number of fake records to generate')
 
     def delete(self):
-        Salario.objects.all().delete()
+        FuncionarioCargo.objects.all().delete()
         Funcionario.objects.all().delete()
         Cargo.objects.all().delete()
 
@@ -32,7 +32,8 @@ class Command(BaseCommand):
         created_cargos = {}
         for cargo_nome in cargos:
             nivel = fake.random_element(elements=('Júnior', 'Pleno', 'Sênior'))
-            cargo, created = Cargo.objects.get_or_create(cargo=cargo_nome, nivel=nivel)
+            salario = fake.pyfloat(min_value=800, max_value=4500, right_digits=2)
+            cargo = Cargo.objects.create(cargo=cargo_nome, nivel=nivel, salario=salario)
             created_cargos[cargo_nome] = cargo
 
         for _ in range(count):
@@ -48,10 +49,11 @@ class Command(BaseCommand):
                 cargo=cargo,  # Associe o cargo ao funcionário
             )
 
-            # Crie um salário para o funcionário
-            salario = Salario.objects.create(
-                salario=fake.pyfloat(min_value=800, max_value=4500, right_digits=2),
-                funcionario=funcionario,
+            # Crie um funcionarioCargo para registrar o histórico
+            FuncionarioCargo.objects.create(
+                id_funcionario=funcionario,
+                id_cargo=cargo,
+                inicio=funcionario.data,
             )
 
         self.stdout.write(self.style.SUCCESS(f'Successfully inserted {count} fake records into the database'))

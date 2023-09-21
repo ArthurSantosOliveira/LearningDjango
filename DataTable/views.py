@@ -11,37 +11,37 @@ from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 from reportlab.platypus import Image
 
-from .models import Funcionario, Cargo, Salario
+from .models import Funcionario, Cargo, FuncionarioCargo
 
 def ordenarFuncionarios(request):
     registros = Funcionario.objects.all()
     return render(request, 'mainDataTable.html', {'registros': registros})
 
 
-# ...
+
 
 def mediaSalarios(request):
     cargos = Cargo.objects.all()
-    
+
     media_por_cargo = {}
-    
+
     for cargo in cargos:
         funcionarios = Funcionario.objects.filter(cargo=cargo)
-        
+
         salarios_funcionarios = []
-        
+
         for funcionario in funcionarios:
-            salarios = Salario.objects.filter(funcionario=funcionario)
-            for salario in salarios:
-                salarios_funcionarios.append(salario.salario)
-        
+            salario = funcionario.cargo.salario
+            if salario is not None:
+                salarios_funcionarios.append(salario)
+
         salario_total = sum(salarios_funcionarios)
         numero_de_funcionarios = len(salarios_funcionarios)
-        
+
         media = salario_total / numero_de_funcionarios if numero_de_funcionarios > 0 else 0
-        
+
         media_por_cargo[cargo] = media
-    
+
     plt.figure(figsize=(15, 5))
 
     cargos = [str(cargo) for cargo in media_por_cargo.keys()]
@@ -50,13 +50,15 @@ def mediaSalarios(request):
     plt.xlabel('Cargos')
     plt.ylabel('Média de Salário')
     plt.title('Média de Salário por Cargo')
-    
+
     # Salve o gráfico em um BytesIO
     buffer = BytesIO()
     plt.savefig(buffer, format='png')
     buffer.seek(0)
-    
-    return buffer, media_por_cargo 
+
+    return buffer
+
+
 
 def paginaMediaSalarios(request):
     buffer, media_por_cargo = mediaSalarios(request)  
@@ -69,6 +71,7 @@ def paginaMediaSalarios(request):
 def generate_pdf(response, graph_buffer):
     buffer = BytesIO()
     p = canvas.Canvas(buffer)
+
 
     cargos = Cargo.objects.all()
     
