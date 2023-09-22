@@ -56,7 +56,8 @@ def mediaSalarios(request):
     plt.savefig(buffer, format='png')
     buffer.seek(0)
 
-    return buffer
+    return buffer, media_por_cargo  
+
 
 
 
@@ -108,7 +109,7 @@ def generate_pdf(response, graph_buffer):
         p.line(100, 740, 500, 740)
 
         # Se eu colocar a imagem aqui ela vai aparecer em todas as páginas (pode ser útil para uma logotipo ou marca d'água)
-        imagem = "C:/Users/pesso/OneDrive/Documentos/GitHub/LearningDjango/DataTable/static/images/logoCoca.png"
+        imagem = "C:/Users/pesso/OneDrive/Documentos/GitHub/LearningDjango/DataTable/static/images/logo-coca-cola-brasil.jpg"
         img = Image(imagem, width=200, height=100)
         img.drawOn(p, 400, 750)
       
@@ -142,7 +143,7 @@ def pdf_view(request):
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = 'attachment; filename="relatorio_funcionarios.pdf"'
     
-    graph_buffer = mediaSalarios(request)
+    graph_buffer, media_por_cargo = mediaSalarios(request) 
     generate_pdf(response, graph_buffer)
 
     return response
