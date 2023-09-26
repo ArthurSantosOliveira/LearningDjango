@@ -3,12 +3,28 @@ from django.contrib import admin
 from django.db.models import Count
 from django.core.exceptions import ValidationError
 
-from .models import Funcionario, Cargo, FuncionarioCargo, Proprietario, Distribuidora, Produtos, Pedidos, RegistroPedido
+from .models import Funcionario, Cargo, FuncionarioCargo,Estado, Cidade, Escritorio
+
 
 class FuncionarioAdminForm(forms.ModelForm):
     class Meta: 
         model = Funcionario
         fields = "__all__"
+
+@admin.register(Estado)
+class EstadoAdmin(admin.ModelAdmin):
+    list_display = ('nome',)
+
+
+@admin.register(Cidade)
+class CidadeAdmin(admin.ModelAdmin):
+    list_display = ('nome', 'estado')
+
+@admin.register(Escritorio)
+class EscritorioAdmin(admin.ModelAdmin):
+    list_display = ('cep', 'cidade', 'rua')
+
+
 
 @admin.register(Funcionario)
 class FuncionarioAdmin(admin.ModelAdmin):

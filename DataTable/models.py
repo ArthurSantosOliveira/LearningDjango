@@ -20,15 +20,15 @@ class Escritorio(models.Model):
     cep = models.CharField(max_length=20)
     cidade = models.ForeignKey(Cidade, on_delete=models.CASCADE)
     rua = models.CharField(max_length=100)
-   
+    
     def __str__(self):
         return f"{self.rua}, {self.cidade.nome}, {self.cidade.estado.nome} - {self.cep}"
-    
+   
 
 
 class Cargo(models.Model):
     cargo = models.CharField(max_length=200)
-    nivel = models.CharField(max_length=250)
+    nivel = models.CharField(max_length=250, null=True, blank=True)
     salario = models.DecimalField(max_digits=10, decimal_places=2, null=True)
     
     def __str__(self):
@@ -38,7 +38,8 @@ class Cargo(models.Model):
 class Funcionario(models.Model):
     data = models.DateField()
     nome = models.CharField(max_length=100)
-    matricula = models.IntegerField()
+    sobrenome = models.CharField(max_length=100)
+    matricula = models.IntegerField(unique=True)
 
     cargo = models.ForeignKey(Cargo, on_delete=models.SET_NULL, null=True)
     escritorio = models.ForeignKey(Escritorio, on_delete=models.CASCADE)
