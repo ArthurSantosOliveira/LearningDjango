@@ -58,10 +58,16 @@ class Distribuidora(models.Model):
     cnpj = models.CharField(max_length=18, unique=True)
     cep = models.CharField(max_length=9)
     proprietario = models.ForeignKey(Proprietario, on_delete=models.CASCADE, related_name='distribuidoras')
-
+    
     def __str__(self):
         return self.nome_fantasia
     
+    def calcular_valor_total_pedidos(self):
+        total = 0.0
+        for pedido in self.pedidos.all():
+            for registro in pedido.registropedido_set.all():
+                total += registro.quantidade * registro.produto.preco_und
+        return total
 
 class Produtos(models.Model):
     nome = models.CharField(max_length=100)
@@ -74,11 +80,10 @@ class Pedidos(models.Model):
     quantidade = models.PositiveIntegerField()
     data_pedido = models.DateField()
     produtos = models.ManyToManyField(Produtos, related_name='pedidos', through='RegistroPedido')
-    distribuidora = models.ForeignKey(Distribuidora, on_delete=models.CASCADE) 
+    distribuidora = models.ForeignKey(Distribuidora, on_delete=models.CASCADE, related_name='pedidos') 
 
     def __str__(self):
         return f"Pedido {self.id}"
-    
 
 class RegistroPedido(models.Model):
     produto = models.ForeignKey(Produtos, on_delete=models.CASCADE)

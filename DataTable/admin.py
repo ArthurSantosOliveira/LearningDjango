@@ -67,10 +67,20 @@ class ProprietarioAdmin(admin.ModelAdmin):
 
     list_display_links = ('nome', 'sobrenome')
 
+
+    
+
 @admin.register(Distribuidora)
 class DistribuidoraAdmin(admin.ModelAdmin):
-    list_display = ('nome_fantasia', 'endereco', 'cnpj', 'cep', 'proprietario')
+    list_display = ('nome_fantasia', 'endereco', 'cnpj', 'cep', 'proprietario', 'exibir_valor_total_pedidos')
 
+    def exibir_valor_total_pedidos(self, obj):
+        return obj.calcular_valor_total_pedidos()
+
+    exibir_valor_total_pedidos.short_description = 'Valor Total de Pedidos'
+
+
+    
 @admin.register(Produtos)
 class ProdutosAdmin(admin.ModelAdmin):
     list_display = ('nome', 'preco_und')

@@ -11,7 +11,7 @@ from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 from reportlab.platypus import Image
 
-from .models import Funcionario, Cargo, FuncionarioCargo
+from .models import Funcionario, Cargo, FuncionarioCargo, Distribuidora
 
 def ordenarFuncionarios(request):
     registros = Funcionario.objects.all()
@@ -147,3 +147,9 @@ def pdf_view(request):
     generate_pdf(response, graph_buffer)
 
     return response
+
+
+#DISTRIBUIDORA
+def ordenaDistribuidoras(request):
+    registros_distribuidoras = Distribuidora.objects.all()
+    return render(request, 'distribuidora.html', {'registros_distribuidoras': registros_distribuidoras})
