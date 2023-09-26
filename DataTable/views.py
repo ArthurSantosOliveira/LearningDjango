@@ -11,13 +11,11 @@ from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 from reportlab.platypus import Image
 
-from .models import Funcionario, Cargo, FuncionarioCargo, Distribuidora
+from .models import Funcionario, Cargo
 
 def ordenarFuncionarios(request):
     registros = Funcionario.objects.all()
     return render(request, 'mainDataTable.html', {'registros': registros})
-
-
 
 
 def mediaSalarios(request):
@@ -60,7 +58,6 @@ def mediaSalarios(request):
 
 
 
-
 def paginaMediaSalarios(request):
     buffer, media_por_cargo = mediaSalarios(request)  
     image_base64 = base64.b64encode(buffer.read()).decode()
@@ -72,7 +69,6 @@ def paginaMediaSalarios(request):
 def generate_pdf(response, graph_buffer):
     buffer = BytesIO()
     p = canvas.Canvas(buffer)
-
 
     cargos = Cargo.objects.all()
     
@@ -147,9 +143,3 @@ def pdf_view(request):
     generate_pdf(response, graph_buffer)
 
     return response
-
-
-#DISTRIBUIDORA
-def ordenaDistribuidoras(request):
-    registros_distribuidoras = Distribuidora.objects.all()
-    return render(request, 'distribuidora.html', {'registros_distribuidoras': registros_distribuidoras})
