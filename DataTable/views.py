@@ -94,7 +94,7 @@ def generate_pdf(response, graph_buffer):
     p.setLineWidth(1)
     p.line(100, y_titulo_principal - 10, 500, y_titulo_principal - 10)
 
-    imagem = "C:/Users/pesso/OneDrive/Documentos/GitHub/LearningDjango/DataTable/static/images/tituloCoca.jpeg"
+    imagem = "C:/Users/pesso/Documents/GitHub/LearningDjango/DataTable/static/images/tituloCoca.jpeg"
     img = Image(imagem, width=200, height=100)
     img.drawOn(p, 200, 600)
 
@@ -109,7 +109,7 @@ def generate_pdf(response, graph_buffer):
         p.line(100, 740, 500, 740)
 
         # Se eu colocar a imagem aqui ela vai aparecer em todas as páginas (pode ser útil para uma logotipo ou marca d'água)
-        imagem = "C:/Users/pesso/OneDrive/Documentos/GitHub/LearningDjango/DataTable/static/images/logo-coca-cola-brasil.jpg"
+        imagem = "DataTable/static/images/logo-coca-cola-brasil.jpg"
         img = Image(imagem, width=200, height=100)
         img.drawOn(p, 400, 750)
       
