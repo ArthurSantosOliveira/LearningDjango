@@ -27,8 +27,10 @@
         </tbody>
     </table>
     <img src="data:image/png;base64,{{ image_base64 }}" alt="Gráfico de Média de Salário por Cargo" >
+    <img src="{% url 'gerar_grafico_pizza' %}" alt="Gráfico de Funcionários por Escritório">
 
-    <button id="gerarPdfButton">Gera PDF de Pessoas por cargos</button>
+
+    <button id="gerarPdfButton">Relatório de Salários</button>
 
 
     <script src="https://code.jquery.com/jquery-3.7.0.js"></script>

@@ -39,16 +39,17 @@ class Funcionario(models.Model):
     data = models.DateField()
     nome = models.CharField(max_length=100)
     sobrenome = models.CharField(max_length=100)
-    matricula = models.IntegerField(unique=True)
+    matricula = models.AutoField(primary_key=True, unique=True, editable=False)
 
     cargo = models.ForeignKey(Cargo, on_delete=models.SET_NULL, null=True)
     escritorio = models.ForeignKey(Escritorio, on_delete=models.CASCADE)
 
-
     def __str__(self):
         return self.nome
+
     class Meta:
         verbose_name_plural = "Funcionarios"
+
 
 class FuncionarioCargo(models.Model):
     id_funcionario = models.ForeignKey(Funcionario, on_delete=models.CASCADE)
@@ -62,3 +63,4 @@ class FuncionarioCargo(models.Model):
 
     def __str__(self):
         return f"{self.id_funcionario} - {self.id_cargo} ({self.inicio} to {self.fim})"
+

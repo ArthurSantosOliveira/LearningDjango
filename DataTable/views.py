@@ -5,13 +5,13 @@ from io import BytesIO
 import base64
 
 from django.http import HttpResponse
-from django.template.loader import get_template
-from django.views import View
-from reportlab.lib.pagesizes import letter
-from reportlab.pdfgen import canvas
-from reportlab.platypus import Image
 
-from .models import Funcionario, Cargo
+from reportlab.lib.pagesizes import letter
+from reportlab.lib import colors
+from reportlab.pdfgen import canvas
+from reportlab.platypus import Image,Table, TableStyle
+
+from .models import Funcionario, Cargo, Escritorio
 
 def ordenarFuncionarios(request):
     registros = Funcionario.objects.all()
@@ -74,17 +74,11 @@ def generate_pdf(response, graph_buffer):
     
     titulo_principal = "Relatório de Funcionários"
     
-    # Ajusta tamanho e a fonte 
     p.setFont("Helvetica-Bold", 16)  
-    
-    # Centraliza o título 
     largura_titulo_principal = p.stringWidth(titulo_principal, "Helvetica-Bold", 16)
     x_titulo_principal = (letter[0] - largura_titulo_principal) / 2
-    
-    # Ajusta a posição vertical 
     y_titulo_principal = 750
     
-    # Desenha o título no PDF
     p.drawString(x_titulo_principal, y_titulo_principal, titulo_principal)
     
     p.setLineWidth(1)
@@ -95,33 +89,44 @@ def generate_pdf(response, graph_buffer):
     img.drawOn(p, 200, 600)
 
     for cargo in cargos:
-        # Adiciona página por cargo
         p.showPage()
-        
-        # Título de acordo com a página
         p.setFontSize(14)
         p.drawString(100, 750, f"Relatório de Funcionários - {cargo.cargo}")
         p.setLineWidth(1)
         p.line(100, 740, 500, 740)
 
-        # Se eu colocar a imagem aqui ela vai aparecer em todas as páginas (pode ser útil para uma logotipo ou marca d'água)
         imagem = "DataTable/static/images/logo-coca-cola-brasil.jpg"
         img = Image(imagem, width=200, height=100)
         img.drawOn(p, 400, 750)
       
         funcionarios = Funcionario.objects.filter(cargo=cargo)
 
-        # Posições da coluna para A4
-        x1, x2, x3 ,y = 100, 250, 400, 700
-
-        # Detalhes dos funcionários nas colunas
-        p.setFont("Helvetica", 12)
+        # Crie uma lista de listas para os dados da tabela
+        data = [["Nome", "Matrícula", "Data", "Salário"]]
         for funcionario in funcionarios:
-            p.drawString(x1, y, f"Nome: {funcionario.nome}")
-            p.drawString(x2, y, f"Matrícula: {funcionario.matricula}")
-            p.drawString(x3, y, f"Data: {funcionario.data}")
+            data.append([f"{funcionario.nome} {funcionario.sobrenome}", funcionario.matricula, funcionario.data, cargo.salario])
 
-            y -= 20
+        # Crie a tabela
+        table = Table(data)
+        table.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (-1, 0), colors.white),
+            ('TEXTCOLOR', (0, 0), (-1, 0), colors.Blacker),
+            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+            ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+            ('BACKGROUND', (0, 1), (-1, -1), colors.white),
+            ('GRID', (0, 0), (-1, -1), 1, colors.black),
+            ('SPACEBEFORE', (0, 0), (-1, -1), 12),  
+            ('SPACEAFTER', (0, 0), (-1, -1), 12),   
+            ('LEFTPADDING', (0, 0), (-1, -1), 12),   
+            ('RIGHTPADDING', (0, 0), (-1, -1), 12), 
+            ('TOPPADDING', (0, 0), (-1, -1), 12),   
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 12) 
+        ]))     
+
+        # Adicione a tabela ao PDF
+        table.wrapOn(p, 500, 500)
+        table.drawOn(p, 150, 650)
 
     # Adicione a imagem do gráfico ao PDF
     graph_buffer.seek(0)
@@ -133,6 +138,40 @@ def generate_pdf(response, graph_buffer):
 
     buffer.seek(0)
     response.write(buffer.read())
+
+def funcionarios_por_escritorio(request):
+    escritorios = Escritorio.objects.all()
+
+    funcionarios_por_escritorio = {}
+
+    for escritorio in escritorios:
+        funcionarios = Funcionario.objects.filter(escritorio=escritorio)
+        funcionarios_por_escritorio[escritorio.id] = funcionarios.count()
+
+    # Crie um gráfico de pizza
+    labels = [escritorio.cidade for escritorio in escritorios]
+    sizes = funcionarios_por_escritorio.values()
+    explode = tuple(0.0 for _ in escritorios)  # Espaço entre as fatias do gráfico (opcional)
+
+    plt.figure(figsize=(8, 8))
+    plt.pie(sizes, explode=explode, labels=labels, autopct='%1.1f%%', startangle=140)
+    plt.axis('equal')  # Equal aspect ratio garante que o gráfico seja circular.
+
+    # Salve o gráfico em um BytesIO
+    buffer = BytesIO()
+    plt.savefig(buffer, format='png')
+    buffer.seek(0)
+
+    # Crie uma resposta HTTP com o gráfico
+    response = HttpResponse(buffer.read(), content_type='image/png')
+    return response
+
+
+
+
+
+
+
 
 
 def pdf_view(request):

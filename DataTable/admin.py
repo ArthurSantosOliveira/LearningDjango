@@ -28,6 +28,7 @@ class EscritorioAdmin(admin.ModelAdmin):
 
 @admin.register(Funcionario)
 class FuncionarioAdmin(admin.ModelAdmin):
+    #form = FuncionarioAdminForm
     list_display = ("nome", "data", "matricula", "mostrar_salario")
     search_fields = ("nome", "matricula")
 
@@ -38,6 +39,7 @@ class FuncionarioAdmin(admin.ModelAdmin):
         return "Nenhum registro de salário"
 
     mostrar_salario.short_description = "Salário"
+
 
 @admin.register(Cargo)
 class CargoAdmin(admin.ModelAdmin):
@@ -51,8 +53,3 @@ class FuncionarioCargoAdmin(admin.ModelAdmin):
     def clean(self):
         if self.fim and self.inicio > self.fim:
             raise ValidationError("A data de início não pode ser posterior à data de término.")
-
-
-
-
-    

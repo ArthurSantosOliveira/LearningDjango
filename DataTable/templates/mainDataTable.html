@@ -12,6 +12,7 @@
     <table class="table table-bordered" id="example" style="text-align: center;">
         <thead class="table-success">
             <tr>
+                <th>Local do escritorio</th>
                 <th>Data</th>
                 <th>Nome</th>
                 <th>Matrícula</th>
@@ -24,8 +25,9 @@
 
             {% for funcionario in registros %}
                 <tr>
+                    <td>{{ funcionario.escritorio }}</td>
                     <td>{{ funcionario.data }}</td>
-                    <td>{{ funcionario.nome }}</td>
+                    <td>{{ funcionario.nome|default:""}} {{ funcionario.sobrenome|default:"" }}</td>
                     <td>{{ funcionario.matricula }}</td>
                     <td>{{ funcionario.cargo }}</td>
                     <td>{{ funcionario.cargo.nivel }}</td>
