@@ -28,8 +28,7 @@ class EscritorioAdmin(admin.ModelAdmin):
 
 @admin.register(Funcionario)
 class FuncionarioAdmin(admin.ModelAdmin):
-    #form = FuncionarioAdminForm
-    list_display = ("nome", "data", "matricula", "mostrar_salario")
+    list_display = ("nome", "data", "matricula")
     search_fields = ("nome", "matricula")
 
     def mostrar_salario(self, obj):
@@ -39,7 +38,6 @@ class FuncionarioAdmin(admin.ModelAdmin):
         return "Nenhum registro de salário"
 
     mostrar_salario.short_description = "Salário"
-
 
 @admin.register(Cargo)
 class CargoAdmin(admin.ModelAdmin):

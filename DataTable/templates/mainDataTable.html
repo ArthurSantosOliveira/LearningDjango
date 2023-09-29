@@ -4,12 +4,16 @@
     <title>Lista de Funcionários</title>
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/select/1.7.0/css/select.dataTables.min.css">
     <link rel="stylesheet" href="//code.highcharts.com/css/highcharts.css">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+
 </head>
 
 <body>
     <h1>Lista de Funcionários</h1>
-    <table class="table table-bordered" id="example" style="text-align: center;">
+    <table class="table table-bordered" id="example2" style="text-align: center;">
         <thead class="table-success">
             <tr>
                 <th>Local do escritorio</th>
@@ -36,30 +40,124 @@
             {% endfor %}
         </tbody>
     </table>
+
+
+    <h1>Cargos</h1>
+    <table class="table table-bordered" id="example" style="text-align: center;">
+        <thead class="table-success">
+            <tr>
+                <th>Cargos</th>
+                <th>Média de Salário Por Cargo</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for cargo, media in media_por_cargo.items %}
+                <tr>
+                    <td>{{ cargo.cargo }} </td>
+                    <td>{{ media|floatformat:"2" }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div id="demo-output" style="margin-bottom: 1em; background-color: transparent !important;" class="chart-display"></div>
+
     <a href="{% url 'paginaMediaSalarios' %}">Gráficos e agrupamentos</a>
 
-    <div id="demo-output" style="height: 300px;"></div>
+
 
     <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>    
+    <script src="https://code.highcharts.com/css/highcharts.css"> </script>
 
     <script src="https://code.highcharts.com/highcharts.js"></script>
     <script src="https://code.highcharts.com/modules/accessibility.js"></script>
 
     <script>
-        $(document).ready(function () {
-            const table = $("#example").DataTable({
-                paging: true,
-                pageLength: 10,
-                lengthChange: true,
-                autoWidth: true,
-                searching: true,
-                info: true,
-                ordering: true
+$(document).ready(function () {
+    const table = $("#example").DataTable({
+        paging: true,
+        pageLength: 10,
+        lengthChange: true,
+        autoWidth: true,
+        searching: false,
+        info: true,
+        ordering: true
+    });
+
+    // Create chart
+    const chart = Highcharts.chart('demo-output', {
+        chart: {
+            type: 'pie',
+            styledMode: true
+        },
+        title: {
+            text: 'Porcentagem de salários por cargo'
+        },
+        series: [
+            {
+                data: chartData(table)
+            }
+        ]
+    });
+
+    // On each draw, update the data in the chart
+    table.on('draw', function () {
+        chart.series[0].setData(chartData(table));
+    });
+
+    function chartData(table) {
+        var data = [];
+
+        // Count the number of entries for each position and calculate total salaries
+        var totalSalaries = table
+            .column(1, { search: 'applied' })
+            .data()
+            .reduce(function (a, b) {
+                var salary = parseFloat(b);
+                if (!isNaN(salary)) {
+                    return a + salary;
+                }
+                return a;
+            }, 0);
+
+        // Count the number of entries for each position
+        table
+            .column(0, { search: 'applied' })
+            .data()
+            .each(function (name, index) {
+                var salary = parseFloat(table.cell(index, 1, { search: 'applied' }).data());
+
+                // Verificar se o salário é um número válido (não é NaN)
+                if (!isNaN(salary)) {
+                    var percentage = (salary / totalSalaries) * 100;
+                    data.push({
+                        name: name,
+                        y: percentage
+                    });
+                }
             });
 
-        });
+        return data;
+    }
+});
     </script>
+
+   <script>
+            $(document).ready(function () {
+                const table = $("#example2").DataTable({
+                    paging: true,
+                    pageLength: 10,
+                    lengthChange: false,
+                    autoWidth: true,
+                    searching: true,
+                    info: true,
+                    ordering: true
+                });
+            });
+            
+    </script> 
+
 </body>
 </html>

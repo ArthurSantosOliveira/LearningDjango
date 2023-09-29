@@ -1,5 +1,5 @@
 .graficos{
-    display: flex;
+    display:flex;
     width: fit-content;
     block-size: fit-content;
 }
@@ -8,3 +8,7 @@
     height: auto;
 }
 
+#demo-output {
+    margin-bottom: 1em;
+    background-color: transparent;
+}

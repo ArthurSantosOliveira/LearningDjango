@@ -14,8 +14,14 @@ from reportlab.platypus import Image,Table, TableStyle
 from .models import Funcionario, Cargo, Escritorio
 
 def ordenarFuncionarios(request):
+
     registros = Funcionario.objects.all()
-    return render(request, 'mainDataTable.html', {'registros': registros})
+    cargos = Cargo.objects.all()
+    media_por_cargo ={}
+    buffer, media_por_cargo = mediaSalarios(request)  
+
+    return render(request, 'mainDataTable.html', {'registros': registros,  'media_por_cargo': media_por_cargo})
+
 
 
 def mediaSalarios(request):
@@ -54,8 +60,8 @@ def mediaSalarios(request):
     buffer = BytesIO()
     plt.savefig(buffer, format='png')
     buffer.seek(0)
-
-    return buffer, media_por_cargo  
+    
+    return buffer, media_por_cargo 
 
 
 def paginaMediaSalarios(request):
@@ -152,8 +158,9 @@ def funcionarios_por_escritorio(request):
     explode = tuple(0.0 for _ in escritorios)  # Espaço entre as fatias do gráfico (opcional)
 
     plt.figure(figsize=(8, 8))
-    plt.pie(sizes, explode=explode, labels=labels, autopct='%1.1f%%', startangle=140, textprops={'fontsize': 14})
+    plt.pie(sizes, explode=explode, labels=labels, autopct='%1.1f%%', startangle=100, textprops={'fontsize': 12})
     plt.axis('equal')  # Equal aspect ratio garante que o gráfico seja circular.
+    plt.text(0.5, 1.07, "Porcentagem de funcionarios por escritorio", horizontalalignment='center', verticalalignment='center', fontsize=16, transform=plt.gca().transAxes)
 
     # Salve o gráfico em um BytesIO
     buffer = BytesIO()
