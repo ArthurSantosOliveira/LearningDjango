@@ -1,0 +1,10 @@
+.graficos{
+    display: flex;
+    width: fit-content;
+    block-size: fit-content;
+}
+.grafico{
+    width: 90%;
+    height: auto;
+}
+

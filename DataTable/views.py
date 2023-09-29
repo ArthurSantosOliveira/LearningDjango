@@ -44,11 +44,12 @@ def mediaSalarios(request):
 
     cargos = [str(cargo) for cargo in media_por_cargo.keys()]
     medias = list(media_por_cargo.values())
+
     plt.bar(cargos, medias)
     plt.xlabel('Cargos')
     plt.ylabel('Média de Salário')
     plt.title('Média de Salário por Cargo')
-
+    plt.xticks(rotation=0, fontsize=15)
     # Salve o gráfico em um BytesIO
     buffer = BytesIO()
     plt.savefig(buffer, format='png')
@@ -57,13 +58,10 @@ def mediaSalarios(request):
     return buffer, media_por_cargo  
 
 
-
 def paginaMediaSalarios(request):
     buffer, media_por_cargo = mediaSalarios(request)  
     image_base64 = base64.b64encode(buffer.read()).decode()
     return render(request, 'testeGraficos.html', {'image_base64': image_base64, 'media_por_cargo': media_por_cargo})
-
-
 
 
 def generate_pdf(response, graph_buffer):
@@ -84,7 +82,7 @@ def generate_pdf(response, graph_buffer):
     p.setLineWidth(1)
     p.line(100, y_titulo_principal - 10, 500, y_titulo_principal - 10)
 
-    imagem = "C:/Users/pesso/Documents/GitHub/LearningDjango/DataTable/static/images/tituloCoca.jpeg"
+    imagem = "C:/Users/pesso/Documents/GitHub/LearningDjango/DataTable/static/DataTable/images/tituloCoca.jpeg"
     img = Image(imagem, width=200, height=100)
     img.drawOn(p, 200, 600)
 
@@ -95,7 +93,7 @@ def generate_pdf(response, graph_buffer):
         p.setLineWidth(1)
         p.line(100, 740, 500, 740)
 
-        imagem = "DataTable/static/images/logo-coca-cola-brasil.jpg"
+        imagem = "C:/Users/pesso/Documents/GitHub/LearningDjango/DataTable/static/DataTable/images/logo-coca-cola-brasil.jpg"
         img = Image(imagem, width=200, height=100)
         img.drawOn(p, 400, 750)
       
@@ -154,7 +152,7 @@ def funcionarios_por_escritorio(request):
     explode = tuple(0.0 for _ in escritorios)  # Espaço entre as fatias do gráfico (opcional)
 
     plt.figure(figsize=(8, 8))
-    plt.pie(sizes, explode=explode, labels=labels, autopct='%1.1f%%', startangle=140)
+    plt.pie(sizes, explode=explode, labels=labels, autopct='%1.1f%%', startangle=140, textprops={'fontsize': 14})
     plt.axis('equal')  # Equal aspect ratio garante que o gráfico seja circular.
 
     # Salve o gráfico em um BytesIO
@@ -165,13 +163,6 @@ def funcionarios_por_escritorio(request):
     # Crie uma resposta HTTP com o gráfico
     response = HttpResponse(buffer.read(), content_type='image/png')
     return response
-
-
-
-
-
-
-
 
 
 def pdf_view(request):
